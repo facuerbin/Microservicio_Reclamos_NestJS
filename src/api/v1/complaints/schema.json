@@ -1,0 +1,32 @@
+{
+    "id" : "string",
+    "userId": "string",
+    "created": "Date",
+    "updated": "Date",
+    "status": "string",
+    "orderId": "string",
+    
+    "cart": {
+        "id": "string",
+        "articles": [
+            {
+                "id": "string",
+                "quantity": "number",
+                "validated": "boolean",
+                "valid": "boolean"
+            }
+        ]
+    },
+    "messages": [
+        {
+            "id": "string",
+            "created": "Date",
+            "dateRead": "Date",
+            "userId": "string",
+            "content": "string"
+        }
+    ]
+}
+
+
+
