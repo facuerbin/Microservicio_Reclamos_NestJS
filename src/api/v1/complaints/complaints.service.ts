@@ -5,11 +5,11 @@ import { Model } from 'mongoose';
 import { Complaint, ComplaintDocument } from './complaint.schema';
 import { CreateComplaintDto } from './dto/create.complaint.dto';
 import { Message } from './entities/Message';
-import { Cart } from './entities/Cart';
-import { Article } from './entities/Article';
 import { HttpService } from '@nestjs/axios';
 import { Observable } from 'rxjs';
 import { GetOrderDto } from './dto/get.order.dto';
+import { GetUserDto } from './dto/get.user.dto';
+import { User } from './entities/User';
 
 
 @Injectable()
@@ -20,54 +20,68 @@ export class ComplaintsService {
     private complaintModel: Model<ComplaintDocument>
   ) { }
 
-  async create(createComplaintDto: CreateComplaintDto): Promise<Complaint> {
+  async create(createComplaintDto: CreateComplaintDto, user: User): Promise<Complaint>{
+    let order = await this.getOrder(createComplaintDto.orderId, user.jwt);
+
     const initialMessage = Builder<Message>()
-      .content(createComplaintDto.message)
-      .created(new Date())
-      .dateRead(null)
-      .userId("1")
-      .messageId("1")
-      .build();
-
-    try {
-      let order = this.http.get(
-        `${process.env.ORDERS_API}/${createComplaintDto.orderId}`
-        )
-    } catch (error) {
-      console.log(error.message);
-    }
-
-    const article = Builder<Article>()
-      .id("1")
-      .quantity(5)
-      .valid(true)
-      .validated(true)
-      .build();
-
-    const cart = Builder<Cart>()
-      .id("1")
-      .articles([article])
-      .build();
-
+    .content(createComplaintDto.message)
+    .created(new Date())
+    .dateRead(null)
+    .userId(user.id)
+    .messageId("1")
+    .build();
+        
     const newComplaint = Builder<Complaint>()
-      .cart(cart)
-      .created(new Date())
-      .messages([initialMessage])
-      .orderId("1")
-      .status("Pendiente")
-      .updated(null)
-      .userId("1")
-      .build();
-
-    const createdComplaint = new this.complaintModel(newComplaint);
-    return createdComplaint.save();
+    .cart({
+      id: order.cartId,
+      articles: order.articles,
+    })
+    .created(new Date())
+    .messages([initialMessage])
+    .orderId(order.id)
+    .status("Pendiente")
+    .updated(null)
+    .userId(user.id)
+    .build();
+    return new this.complaintModel(newComplaint).save();
   }
 
-  async findAll(): Promise<Complaint[]> {
-    return this.complaintModel.find().exec();
+  async findAll(userId: string): Promise<Complaint[]> {
+    return this.complaintModel.find({
+      userId
+    }).exec();
   }
 
-  getHello(): string {
-    return 'Hello World from NestJS!!';
+  async findById(id: string, userId: string): Promise<Complaint> {
+    return this.complaintModel.findOne({
+      _id: id,
+      userId
+    }).exec();
+  }
+
+  async createMessage(user: User, complaintId: string, messageContent: string): Promise<Complaint> {
+    const complaint = await this.complaintModel.findById(complaintId).exec();
+
+    const message = Builder<Message>()
+    .content(messageContent)
+    .created(new Date())
+    .dateRead(null)
+    .userId(user.id)
+    .messageId("1")
+    .build();
+    
+    complaint.messages.push(message);
+    complaint.updated = new Date();
+    return complaint.save();
+  }
+
+  async getOrder(id: string, jwt: string): Promise<GetOrderDto> {
+    return await this.http.get<GetOrderDto>(
+      `${process.env.ORDERS_API}/${id}`
+      , {
+        headers: {
+          'Authorization': jwt
+        }
+      }).toPromise().then(res => res.data) as GetOrderDto;
   }
 }

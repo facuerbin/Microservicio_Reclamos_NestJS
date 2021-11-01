@@ -9,7 +9,7 @@ export type ComplaintDocument = Complaint & Document;
 
 @Schema()
 export class Complaint {
-    @Prop()
+    @Prop({ required: true })
     userId: string;
     
     @Prop()
@@ -18,10 +18,10 @@ export class Complaint {
     @Prop()
     updated: Date;
     
-    @Prop()
+    @Prop({ required: true })
     status: string;
     
-    @Prop()
+    @Prop({ required: true })
     orderId: string;
 
     @Prop({type: Cart})
@@ -30,7 +30,7 @@ export class Complaint {
         articles: [Article]
     };
 
-    @Prop()
+    @Prop({ required: true })
     messages: [Message];
 }
 

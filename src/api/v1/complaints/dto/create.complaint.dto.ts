@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Message } from '../entities/Message';
 
 export class CreateComplaintDto {
   @ApiProperty()
