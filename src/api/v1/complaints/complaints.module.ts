@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UserMiddleware } from 'src/middlewares/user.middleware';
 import { ComplaintSchema, Complaint } from './complaint.schema';
 import { ComplaintsController } from './complaints.controller';
 import { ComplaintsService } from './complaints.service';
@@ -15,4 +16,13 @@ import { ComplaintsService } from './complaints.service';
   controllers: [ComplaintsController],
   providers: [ComplaintsService],
 })
-export class ComplaintsModule {}
+export class ComplaintsModule implements NestModule{
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(UserMiddleware)
+      .forRoutes({
+        path: "", 
+        method: RequestMethod.ALL
+      });
+  }
+}
