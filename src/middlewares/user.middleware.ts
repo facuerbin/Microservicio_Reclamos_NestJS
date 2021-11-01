@@ -8,7 +8,7 @@ export class UserMiddleware implements NestMiddleware {
         if (res.locals.user && res.locals.user.permissions.indexOf("user") > -1 && res.locals.user.permissions.indexOf("admin") === -1 ){
             next();
         } else {
-            return res.status(400).send();
+            return res.status(401).send();
         }
     }
 }

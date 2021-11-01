@@ -16,12 +16,12 @@ import { ComplaintsService } from './complaints.service';
   controllers: [ComplaintsController],
   providers: [ComplaintsService],
 })
-export class ComplaintsModule implements NestModule {
+export class ComplaintsModule implements NestModule{
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(UserMiddleware)
       .forRoutes({
-        path: "",
+        path: "api/v1/reclamos",
         method: RequestMethod.ALL
       });
   }

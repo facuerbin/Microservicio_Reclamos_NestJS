@@ -47,7 +47,7 @@ export class ComplaintsController {
   putMessage(@Param() params, @Body() body: CreateMessageDto, @Res() res) {
     try {
       const user = res.locals.user as User;
-      if (!body.message) {
+      if ( !body.message ) {
         throw new Error()
       }
       this.complaintsService.createMessage(user, params.complaintId, body.message)
