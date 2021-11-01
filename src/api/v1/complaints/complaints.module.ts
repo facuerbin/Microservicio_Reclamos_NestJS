@@ -8,20 +8,20 @@ import { ComplaintsService } from './complaints.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ 
-      name: Complaint.name, schema: ComplaintSchema 
+    MongooseModule.forFeature([{
+      name: Complaint.name, schema: ComplaintSchema
     }]),
     HttpModule
   ],
   controllers: [ComplaintsController],
   providers: [ComplaintsService],
 })
-export class ComplaintsModule implements NestModule{
+export class ComplaintsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(UserMiddleware)
       .forRoutes({
-        path: "", 
+        path: "",
         method: RequestMethod.ALL
       });
   }

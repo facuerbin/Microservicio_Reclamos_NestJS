@@ -31,6 +31,9 @@ export class Complaint {
     };
 
     @Prop({ required: true })
+    issue: string;
+
+    @Prop({ required: true })
     messages: [Message];
 }
 

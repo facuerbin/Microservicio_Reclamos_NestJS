@@ -37,6 +37,7 @@ export class ComplaintsService {
       articles: order.articles,
     })
     .created(new Date())
+    .issue(createComplaintDto.issue)
     .messages([initialMessage])
     .orderId(order.id)
     .status("Pendiente")

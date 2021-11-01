@@ -5,5 +5,8 @@ export class CreateComplaintDto {
   orderId: string;
 
   @ApiProperty()
+  issue: string;
+
+  @ApiProperty()
   message: string;
 }
