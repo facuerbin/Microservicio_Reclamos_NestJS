@@ -9,4 +9,7 @@ export class CreateComplaintDto {
 
   @ApiProperty()
   message: string;
+
+  @ApiProperty()
+  articleId: string;
 }

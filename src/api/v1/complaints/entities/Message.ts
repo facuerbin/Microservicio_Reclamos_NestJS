@@ -4,4 +4,5 @@ export class Message {
     dateRead: Date;
     userId: string;
     content: string;
+    imageUrl: string;
 }

@@ -1,8 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Article } from './entities/Article';
 import { Message } from './entities/Message';
-import { Cart } from './entities/Cart';
 
 
 export type ComplaintDocument = Complaint & Document;
@@ -24,11 +22,8 @@ export class Complaint {
     @Prop({ required: true })
     orderId: string;
 
-    @Prop({type: Cart})
-    cart: {
-        id: string,
-        articles: [Article]
-    };
+    @Prop()
+    articleId: string;
 
     @Prop({ required: true })
     issue: string;

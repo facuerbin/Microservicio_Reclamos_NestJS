@@ -3,27 +3,18 @@
     "userId": "string",
     "created": "Date",
     "updated": "Date",
-    "status": "string",
+    "status": "Pendiente | Resuelto | Cancelado",
     "orderId": "string",
     
-    "cart": {
-        "id": "string",
-        "articles": [
-            {
-                "id": "string",
-                "quantity": "number",
-                "validated": "boolean",
-                "valid": "boolean"
-            }
-        ]
-    },
+    "articleId": "string",
     "messages": [
         {
             "id": "string",
             "created": "Date",
             "dateRead": "Date",
             "userId": "string",
-            "content": "string"
+            "content": "string",
+            "imageUrl": "string"
         }
     ]
 }
