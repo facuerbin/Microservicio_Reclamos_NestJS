@@ -7,9 +7,13 @@ export class CreateComplaintDto {
   @ApiProperty()
   issue: string;
 
+  @ApiProperty({ required: false })
+  articleId: string | null;
+
   @ApiProperty()
   message: string;
 
-  @ApiProperty()
-  articleId: string;
+  @ApiProperty({ required: false })
+  imageUrl: string | null;
+
 }

@@ -14,9 +14,19 @@ async function bootstrap() {
   // Swagger Config
   const config = new DocumentBuilder()
     .setTitle('API Reclamos Nest')
-    .setDescription('Descripción de la API de Reclamos')
-    .setVersion('1.0')
-    .addTag('reclamos, complaints')
+    .setDescription('Microservicio que permite generar reclamos asociados a una orden. Estos reclamos pueden caer sobre toda la orden o sobre un productor en particular. Adicionalmente permite el envio de mensajes entre el cliente (quien crea el reclamo) y los administradores del ecomerce para llegar a un acuerdo. Estos mensajes pueden contener tanto texto cómo también pueden incluir la URL de una imagen almacenda en el servicio de Imagenes. Finalmente el cliente cómo administradores podrán cerrar los reclamos activos con resultado Resuelto o Cancelado.')
+    .setVersion('1.0.0')
+    .addBearerAuth(
+      {
+        description: "Por favor ingrese el token de la siguiente forma: bearer {jwt}",
+        type: "apiKey",
+        name: "Authorization",
+        bearerFormat: "bearer",
+        scheme: "bearer",
+        in: "header"
+      },
+      "jwt"
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/v1', app, document);

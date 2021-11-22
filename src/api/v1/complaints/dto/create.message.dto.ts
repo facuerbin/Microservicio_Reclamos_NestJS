@@ -4,6 +4,6 @@ export class CreateMessageDto {
   @ApiProperty()
   message: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   imageUrl: string;
 }

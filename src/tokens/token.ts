@@ -9,7 +9,7 @@ export interface Session {
     token: string;
     user: GetUserDto;
 }
-const cache = redis.createClient({url: process.env.REDIS_URL});
+const cache = redis.createClient({ url: process.env.REDIS_URL });
 
 export async function validate(jwt: string): Promise<Session> {
     return new Promise<Session>((resolve, reject) => {
@@ -35,10 +35,10 @@ export async function validate(jwt: string): Promise<Session> {
                 cache.setex(jwt, Number(process.env.REDIS_EXP), JSON.stringify(res.data));
                 resolve({
                     token: jwt,
-                    user:res.data
+                    user: res.data
                 })
-            }).catch( err => {
-                reject("Unauthorized "+ err.toString());
+            }).catch(err => {
+                reject("Unauthorized " + err.toString());
             });
     });
 }

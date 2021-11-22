@@ -4,7 +4,11 @@ import { CreateComplaintDto } from './dto/create.complaint.dto';
 import { CreateMessageDto } from './dto/create.message.dto';
 import { User } from './entities/User';
 import { ClientProxy } from '@nestjs/microservices';
+import { ApiBearerAuth, ApiHeader, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Complaint } from './complaint.schema';
+import { Message } from './entities/Message';
 
+@ApiTags("Reclamos")
 @Controller("api/v1/reclamos")
 export class ComplaintsController {
   constructor(
@@ -12,14 +16,20 @@ export class ComplaintsController {
     @Inject('RMQ_SERVICE') private rmqClient: ClientProxy
   ) { }
 
-  @Get() //User Route
+  @Get() // Listar reclamos del usuario
+  @ApiBearerAuth("jwt")
+  @ApiOkResponse({ description: "La solicitud fue exitosa.", type: [Complaint] })
+  @ApiResponse({ status: 401, description: 'Operación no autorizada.' })
   async getUserComplaints(@Res() res) {
-    //this.rmqClient.emit("Hello", "Hello from rabbit MQ");
     const list = await this.complaintsService.findAll(res.locals.user.id);
     return res.status(200).send(list);
   }
 
-  @Post() // User Route
+  @Post() // Crear reclamo de usuario
+  @ApiBearerAuth("jwt")
+  @ApiOkResponse({ description: "El reclamo se generó exitosamente.", type: Complaint })
+  @ApiResponse({ status: 401, description: 'Operación no autorizada.' })
+  @ApiResponse({ status: 400, description: 'Ocurrió un error al procesar su solicitud.' })
   postComplaint(@Body() createComplaintDto: CreateComplaintDto, @Res() res) {
     this.complaintsService.create(createComplaintDto, res.locals.user)
       .then(result => {
@@ -30,7 +40,11 @@ export class ComplaintsController {
       });
   }
 
-  @Get("admin") //Admin Route
+  @Get("admin") // Listar todos los reclamos
+  @ApiBearerAuth("jwt")
+  @ApiOkResponse({ description: "La solicitud fue exitosa.", type: [Complaint] })
+  @ApiResponse({ status: 401, description: 'Operación no autorizada.' })
+  @ApiResponse({ status: 400, description: 'Ocurrió un error al procesar su solicitud.' })
   async getComplaintsAdmin(@Res() res) {
     this.complaintsService.findAllAdmin()
       .then(list => {
@@ -41,7 +55,11 @@ export class ComplaintsController {
       })
   }
 
-  @Get(":id")
+  @Get(":id") // Obtener detalle de reclamo
+  @ApiBearerAuth("jwt")
+  @ApiOkResponse({ description: "Se encontró el reclamo solicitado.", type: Complaint })
+  @ApiResponse({ status: 401, description: 'Operación no autorizada.' })
+  @ApiResponse({ status: 400, description: 'Ocurrió un error al procesar su solicitud.' })
   getComplaintDetail(@Param() params, @Res() res) {
     this.complaintsService.findById(params.id, res.locals.user.id)
       .then(result => {
@@ -57,11 +75,15 @@ export class ComplaintsController {
 
   }
 
-  @Put(":id")
+  @Put(":id") // Actualizar el estado del reclamo
+  @ApiBearerAuth('access-token')
+  @ApiOkResponse({ description: "El reclamo fue actualizado exitosamente.", type: Complaint })
+  @ApiResponse({ status: 401, description: 'Operación no autorizada.' })
+  @ApiResponse({ status: 400, description: 'Ocurrió un error al procesar su solicitud.' })
   updateComplaint(@Param() params, @Res() res, @Body() body) {
     this.complaintsService.updateStatus(params.id, res.locals.user, body.status)
       .then(result => {
-        if ( !result ) {
+        if (!result) {
           throw new Error("Invalid complaint");
         }
 
@@ -72,7 +94,12 @@ export class ComplaintsController {
       })
   }
 
-  @Put(":complaintId/msg")
+  @Put(":complaintId/msg") // Agregar un mensaje al reclamo
+  @ApiBearerAuth("jwt")
+  @ApiOkResponse({ description: "Se generó un nuevo mensaje en el reclamo.", type: Message })
+  @ApiResponse({ status: 200, description: 'Se generó un nuevo mensaje en el reclamo.' })
+  @ApiResponse({ status: 401, description: 'Operación no autorizada.' })
+  @ApiResponse({ status: 400, description: 'Ocurrió un error al procesar su solicitud.' })
   putMessage(@Param() params, @Body() body: CreateMessageDto, @Res() res) {
     try {
       const user = res.locals.user as User;
