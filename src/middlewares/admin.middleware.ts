@@ -5,7 +5,6 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class AdminMiddleware implements NestMiddleware {
     async use(req: Request, res: Response, next: NextFunction) {
-        console.log("Admin")
         if (res.locals.user && res.locals.user.permissions.indexOf("admin") > -1 ){
             next();
         } else {

@@ -2,24 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+import * as logoutObserver from './rabbit/logoutService';
 
 async function bootstrap() {
   // API
   const app = await NestFactory.create(AppModule);
-  
-  /*
+
   // RabbitMQ
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: ['amqp://localhost:5672'],
-      queue: 'complaints',
-      queueOptions: {
-        durable: true
-      },
-    },
-  });
-  */
+  logoutObserver.init();
 
   // Swagger Config
   const config = new DocumentBuilder()

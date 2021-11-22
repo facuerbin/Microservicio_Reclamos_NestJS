@@ -15,9 +15,17 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     }]),
     HttpModule,
     ClientsModule.register([
-      { 
-        name: 'RMQ_SERVICE', 
-        transport: Transport.RMQ },
+      {
+        name: 'RMQ_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: ["amqp://localhost"],
+          queue: "complaints",
+          queueOptions: {
+            durable: false
+          },
+        }
+      },
     ])
   ],
   controllers: [ComplaintsController],
@@ -26,15 +34,15 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 export class ComplaintsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(UserMiddleware)
-      .forRoutes({
-        path: "api/v1/reclamos",
-        method: RequestMethod.ALL
-      });
-    consumer
       .apply(AdminMiddleware)
       .forRoutes({
         path: "api/v1/reclamos/admin",
+        method: RequestMethod.ALL
+      });
+    consumer
+      .apply(UserMiddleware)
+      .forRoutes({
+        path: "api/v1/reclamos",
         method: RequestMethod.ALL
       });
   }

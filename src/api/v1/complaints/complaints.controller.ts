@@ -4,7 +4,6 @@ import { CreateComplaintDto } from './dto/create.complaint.dto';
 import { CreateMessageDto } from './dto/create.message.dto';
 import { User } from './entities/User';
 import { ClientProxy } from '@nestjs/microservices';
-import { Status } from './entities/Status';
 
 @Controller("api/v1/reclamos")
 export class ComplaintsController {
@@ -15,6 +14,7 @@ export class ComplaintsController {
 
   @Get() //User Route
   async getUserComplaints(@Res() res) {
+    //this.rmqClient.emit("Hello", "Hello from rabbit MQ");
     const list = await this.complaintsService.findAll(res.locals.user.id);
     return res.status(200).send(list);
   }
