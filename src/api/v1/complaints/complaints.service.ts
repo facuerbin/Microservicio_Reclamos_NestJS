@@ -11,6 +11,8 @@ import { User } from './entities/User';
 import { Status } from './entities/Status';
 import { CreateMessageDto } from './dto/create.message.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { config } from '../../../config/config';
+
 
 @Injectable()
 export class ComplaintsService {
@@ -128,7 +130,7 @@ export class ComplaintsService {
   // Método para traer la orden del microservicio Orders
   async getOrder(id: string, jwt: string): Promise<GetOrderDto> {
     return this.http.get<GetOrderDto>(
-      `${process.env.ORDERS_API}/${id}`
+      `${config.ORDERS_API}/${id}`
       , {
         headers: {
           'Authorization': jwt

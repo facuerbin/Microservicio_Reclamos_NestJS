@@ -2,6 +2,7 @@ import { Logger } from "@nestjs/common";
 import { ComplaintSchema } from "src/api/v1/complaints/complaint.schema";
 import { Status } from "src/api/v1/complaints/entities/Status";
 import { RabbitTopicConsumer } from "./tools/topicConsumer";
+import { config } from './../config/config';
 
 interface IRabbitMessage {
     type: string;
@@ -33,7 +34,7 @@ export function init() {
 async function processCanceled(rabbitMessage: IRabbitMessage) {
     Logger.log(`RabbitMQ: Order ${rabbitMessage.message.orderId} canceled`);
     const mongoose = require("mongoose");
-    const db = await mongoose.connect(`mongodb://localhost:${process.env.DB_PORT}/complaints`);
+    const db = await mongoose.connect(`mongodb://localhost:${config.DB_PORT}/complaints`);
     db.model("complaints", ComplaintSchema)
         .findOne({ orderId: rabbitMessage.message.orderId, status: Status.Active }).exec()
         .then(complaint => {

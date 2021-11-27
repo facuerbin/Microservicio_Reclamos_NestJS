@@ -1,6 +1,7 @@
 import { Logger } from "@nestjs/common";
 import amqp = require("amqplib");
 import { RabbitProcessor, IRabbitMessage } from "./common";
+import { config } from './../../config/config';
 
 
 export class RabbitFanoutConsumer {
@@ -15,7 +16,7 @@ export class RabbitFanoutConsumer {
 
     async init() {
         try {
-            const conn = await amqp.connect(process.env.RABBIT_URL);
+            const conn = await amqp.connect(config.RABBIT_URL);
             const channel = await conn.createChannel();
 
             channel.on("close", function () {

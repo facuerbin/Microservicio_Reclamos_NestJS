@@ -1,6 +1,7 @@
 import * as redis from "redis";
 import axios from "axios";
 import { GetUserDto } from "src/api/v1/complaints/dto/get.user.dto";
+import { config } from './../config/config';
 
 // Caché implementado con Redis para no tener que ir al servicio Auth cada vez que se recibe un request.
 // Si el usuario existe en caché se utiliza la información de allí, sino se busca en Auth.
@@ -9,7 +10,8 @@ export interface Session {
     token: string;
     user: GetUserDto;
 }
-const cache = redis.createClient({ url: process.env.REDIS_URL });
+
+const cache = redis.createClient({ url: config.REDIS_URL });
 
 export async function validate(jwt: string): Promise<Session> {
     return new Promise<Session>((resolve, reject) => {
@@ -26,13 +28,13 @@ export async function validate(jwt: string): Promise<Session> {
 
         // Si no está en redis lo traemos del servicio auth
         const user = axios.get<GetUserDto>(
-            `${process.env.AUTH_API}/current`
+            `${config.AUTH_API}/current`
             , {
                 headers: {
                     'Authorization': jwt
                 }
             }).then(res => {
-                cache.setex(jwt, Number(process.env.REDIS_EXP), JSON.stringify(res.data));
+                cache.setex(jwt, Number(config.REDIS_EXP), JSON.stringify(res.data));
                 resolve({
                     token: jwt,
                     user: res.data
