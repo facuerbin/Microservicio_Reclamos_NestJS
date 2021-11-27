@@ -33,7 +33,7 @@ $ npm run start:prod
 
 ## Utilizando la Api
 
-Una vez puesto en funcionamiento el sistema, se podrá acceder a la documentación de la API. Allí mismo se podrán probar los distintos endpoints. Se requerirá autenticación, por lo que primero se debe crear un usuario en el sistema de ecomerce, ingresar a la base de datos (se recomiendo el uso de MongoDB Compass) y modificar los permisos de usuario añadiendo el permiso "admin". Además será útil contar con otro usuario que solo tenga permisos de "user" de modo que se puedan probar todos los endpoints del sistema.
+Una vez puesto en funcionamiento el sistema, se podrá acceder a la documentación de la API desde http://localhost:3005 (o el puerto que haya configurado en .env). Allí mismo se podrán probar los distintos endpoints. Se requerirá autenticación, por lo que primero se debe crear un usuario en el sistema de ecomerce (http://localhost:4200), ingresar a la base de datos (se recomiendo el uso de MongoDB Compass) y modificar los permisos de usuario añadiendo el permiso "admin". Además será útil contar con otro usuario que solo tenga permisos de "user" de modo que se puedan probar todos los endpoints del sistema.
 
 ## Licencia
 

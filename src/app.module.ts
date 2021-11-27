@@ -7,7 +7,6 @@ import { ComplaintsModule } from './api/v1/complaints/complaints.module';
 import { AuthMiddleware } from './middlewares/auth.middleware';
 import { ComplaintsController } from './api/v1/complaints/complaints.controller';
 import { ScheduleModule } from '@nestjs/schedule';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 
 
 @Module({
@@ -18,7 +17,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ),
     ComplaintsModule,
     ScheduleModule.forRoot(),
-    EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
