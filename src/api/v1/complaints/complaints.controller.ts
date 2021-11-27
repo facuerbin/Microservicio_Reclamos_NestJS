@@ -1,10 +1,9 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Logger, Param, Post, Put, Res } from '@nestjs/common';
 import { ComplaintsService } from './complaints.service';
 import { CreateComplaintDto } from './dto/create.complaint.dto';
 import { CreateMessageDto } from './dto/create.message.dto';
 import { User } from './entities/User';
-import { ClientProxy } from '@nestjs/microservices';
-import { ApiBearerAuth, ApiHeader, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Complaint } from './complaint.schema';
 import { Message } from './entities/Message';
 
@@ -12,17 +11,35 @@ import { Message } from './entities/Message';
 @Controller("api/v1/reclamos")
 export class ComplaintsController {
   constructor(
-    private readonly complaintsService: ComplaintsService,
-    @Inject('RMQ_SERVICE') private rmqClient: ClientProxy
+    private readonly complaintsService: ComplaintsService
   ) { }
 
   @Get() // Listar reclamos del usuario
   @ApiBearerAuth("jwt")
   @ApiOkResponse({ description: "La solicitud fue exitosa.", type: [Complaint] })
   @ApiResponse({ status: 401, description: 'Operación no autorizada.' })
-  async getUserComplaints(@Res() res) {
-    const list = await this.complaintsService.findAll(res.locals.user.id);
-    return res.status(200).send(list);
+  async getComplaints(@Res() res) {
+    if (res.locals.user && res.locals.user.permissions.indexOf("admin") > -1 ){
+      // Si es admin puede ver todos los reclamos
+      this.complaintsService.findAllAdmin()
+      .then(list => {
+        return res.status(200).send(list);
+      })
+      .catch(error => {
+        Logger.error(`Get() Error: ${error.toString()}`);
+        return res.status(400).send();
+      })
+  } else {
+    // Sino solo los que el usuario ha realizado
+    this.complaintsService.findAll(res.locals.user.id)
+    .then( list => {
+      return res.status(200).send(list);
+    })
+    .catch( error => {
+      Logger.error(`Get() Error: ${error.toString()}`);
+      return res.status(400).send();
+    })
+  }
   }
 
   @Post() // Crear reclamo de usuario
@@ -36,24 +53,11 @@ export class ComplaintsController {
         return res.status(200).send(result);
       })
       .catch(error => {
+        Logger.error(`Post() Error: ${error.toString()}`);
         return res.status(400).send();
       });
   }
 
-  @Get("admin") // Listar todos los reclamos
-  @ApiBearerAuth("jwt")
-  @ApiOkResponse({ description: "La solicitud fue exitosa.", type: [Complaint] })
-  @ApiResponse({ status: 401, description: 'Operación no autorizada.' })
-  @ApiResponse({ status: 400, description: 'Ocurrió un error al procesar su solicitud.' })
-  async getComplaintsAdmin(@Res() res) {
-    this.complaintsService.findAllAdmin()
-      .then(list => {
-        return res.status(200).send(list);
-      })
-      .catch(error => {
-        return res.status(400).send();
-      })
-  }
 
   @Get(":id") // Obtener detalle de reclamo
   @ApiBearerAuth("jwt")
@@ -70,6 +74,7 @@ export class ComplaintsController {
         return res.status(200).send({ data: result });
       })
       .catch(error => {
+        Logger.error(`Get(/:id) Error: ${error.toString()}`);
         return res.status(400).send();
       })
 
@@ -90,6 +95,7 @@ export class ComplaintsController {
         return res.status(200).send({ data: result });
       })
       .catch(error => {
+        Logger.error(`Put(/:id) Error: ${error.toString()}`);
         return res.status(400).send();
       })
   }
@@ -111,8 +117,8 @@ export class ComplaintsController {
           return res.status(200).send({ data: result });
         })
     } catch (error) {
+      Logger.error(`Get(/:complaintId/msg) Error: ${error.toString()}`);
       return res.status(400).send();
     }
   }
-
 }

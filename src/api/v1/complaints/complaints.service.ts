@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Builder } from 'builder-pattern';
 import { Model, Types } from 'mongoose';
@@ -10,14 +10,14 @@ import { GetOrderDto } from './dto/get.order.dto';
 import { User } from './entities/User';
 import { Status } from './entities/Status';
 import { CreateMessageDto } from './dto/create.message.dto';
-
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class ComplaintsService {
   constructor(
     private http: HttpService,
     @InjectModel(Complaint.name)
-    private complaintModel: Model<ComplaintDocument>
+    private complaintModel: Model<ComplaintDocument>,
   ) { }
 
   async create(createComplaintDto: CreateComplaintDto, user: User): Promise<Complaint> {
@@ -134,5 +134,25 @@ export class ComplaintsService {
           'Authorization': jwt
         }
       }).toPromise().then(res => res.data);
+  }
+
+  // Método que cancela los reclamos expirados
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  async expirationhandler() {
+    const expiration = new Date();
+    expiration.setDate(expiration.getDate() - 5);
+
+    const results = await this.complaintModel.find({
+      updated: {
+        $lte: expiration,
+      }, 
+      status: Status.Active,
+    }).exec();
+
+    results.forEach(complaint => {
+      complaint.status = Status.Expired;
+      Logger.log(`Complaint: ${complaint.id} expired`);
+      complaint.save()
+    });
   }
 }

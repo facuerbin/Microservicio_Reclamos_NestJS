@@ -1,5 +1,6 @@
 import { RabbitFanoutConsumer } from "./tools/fanoutConsumer";
-import * as token from "./../tokens/token";
+import * as token from "../tokens/token";
+import { Logger } from "@nestjs/common";
 
 interface IRabbitMessage {
     type: string;
@@ -25,6 +26,6 @@ export function init() {
  *     }
  */
 function processLogout(rabbitMessage: IRabbitMessage) {
-    console.log("RabbitMQ Consume logout " + rabbitMessage.message);
+    Logger.log("RabbitMQ: Consume logout " + rabbitMessage.message);
     token.invalidate(rabbitMessage.message);
 }

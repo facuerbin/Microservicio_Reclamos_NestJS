@@ -6,7 +6,6 @@ import { UserMiddleware } from 'src/middlewares/user.middleware';
 import { ComplaintSchema, Complaint } from './complaint.schema';
 import { ComplaintsController } from './complaints.controller';
 import { ComplaintsService } from './complaints.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -14,19 +13,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       name: Complaint.name, schema: ComplaintSchema
     }]),
     HttpModule,
-    ClientsModule.register([
-      {
-        name: 'RMQ_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: ["amqp://localhost"],
-          queue: "complaints",
-          queueOptions: {
-            durable: false
-          },
-        }
-      },
-    ])
   ],
   controllers: [ComplaintsController],
   providers: [ComplaintsService],

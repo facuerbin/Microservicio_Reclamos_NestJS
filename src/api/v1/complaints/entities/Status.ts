@@ -1,5 +1,6 @@
 export enum Status {
     Active = "Activo",
     Solved = "Resuelto",
-    Canceled = "Cancelado"
+    Canceled = "Cancelado",
+    Expired = "Expirado"
 }
