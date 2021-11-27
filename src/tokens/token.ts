@@ -11,7 +11,7 @@ export interface Session {
     user: GetUserDto;
 }
 
-const cache = redis.createClient({ url: config.REDIS_URL });
+const cache = redis.createClient({ url:`//${config.REDIS_HOST}`} );
 
 export async function validate(jwt: string): Promise<Session> {
     return new Promise<Session>((resolve, reject) => {

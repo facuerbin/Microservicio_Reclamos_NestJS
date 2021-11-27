@@ -15,7 +15,7 @@ export class RabbitTopicConsumer {
 
     async init() {
         try {
-            const conn = await amqp.connect(config.RABBIT_URL);
+            const conn = await amqp.connect(config.RABBIT_HOST);
             const channel = await conn.createChannel();
 
             channel.on("close", function () {

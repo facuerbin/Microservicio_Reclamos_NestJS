@@ -13,7 +13,7 @@ import { config } from './config/config';
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(
-      `mongodb://localhost:${config.DB_PORT}/${config.DB_NAME}`
+      `mongodb://${config.DB_HOST}:${config.DB_PORT}/${config.DB_NAME}`
     ),
     ComplaintsModule,
     ScheduleModule.forRoot(),

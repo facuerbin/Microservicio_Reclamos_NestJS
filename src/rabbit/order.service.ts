@@ -34,7 +34,7 @@ export function init() {
 async function processCanceled(rabbitMessage: IRabbitMessage) {
     Logger.log(`RabbitMQ: Order ${rabbitMessage.message.orderId} canceled`);
     const mongoose = require("mongoose");
-    const db = await mongoose.connect(`mongodb://localhost:${config.DB_PORT}/complaints`);
+    const db = await mongoose.connect(`mongodb://${config.DB_HOST}:${config.DB_PORT}/${config.DB_NAME}`);
     db.model("complaints", ComplaintSchema)
         .findOne({ orderId: rabbitMessage.message.orderId, status: Status.Active }).exec()
         .then(complaint => {

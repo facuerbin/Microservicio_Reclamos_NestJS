@@ -7,6 +7,7 @@ import { Logger } from '@nestjs/common';
 import { config } from './config/config';
 
 async function bootstrap() {
+  Logger.log(`App runnign in ${config.NODE_ENV} enviroment`)
   // API
   const app = await NestFactory.create(AppModule);
 
