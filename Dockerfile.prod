@@ -2,7 +2,7 @@ FROM node:16 AS builder
 WORKDIR /app
 RUN curl -L https://github.com/facuerbin/Microservicio_Reclamos_NestJS/tarball/main | tar xz --strip=1
 COPY ./package.json ./
-RUN npm install
+RUN npm install --silent
 COPY . .
 RUN npm run build
 

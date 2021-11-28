@@ -1,6 +1,6 @@
 {
   "name": "reclamos-nest",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Microservicio de Reclamos, realizado para la cátedra Arquitectura de Microservicios, UTN-FRM",
   "author": "Facundo Erbin",
   "private": true,

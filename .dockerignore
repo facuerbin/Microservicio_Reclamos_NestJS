@@ -1,5 +1,11 @@
 # Node modules
 /node_modules
+node_modules
+
+dist
+.dockerignore
+Dockerfile
+Dockerfile.prod
 
 # IDEs and editors
 /.idea
