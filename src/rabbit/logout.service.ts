@@ -13,17 +13,8 @@ export function init() {
     fanout.init();
 }
 
-/**
- * @api {fanout} auth/logout Logout de Usuarios
- * @apiGroup RabbitMQ GET
- *
- * @apiDescription Escucha de mensajes logout desde el servicio auth.
- *
- * @apiSuccessExample {json} Mensaje
- *     {
- *        "type": "logout",
- *        "message": "{tokenId}"
- *     }
+/*
+ * {fanout} auth/logout Logout de Usuarios
  */
 function processLogout(rabbitMessage: IRabbitMessage) {
     Logger.log("RabbitMQ: Consume logout " + rabbitMessage.message);

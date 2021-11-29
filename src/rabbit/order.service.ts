@@ -15,21 +15,8 @@ export function init() {
     topic.init();
 }
 
-/**
- * @api {topic} order/order_canceled Ordenes Canceladas
- * @apiGroup RabbitMQ GET
- *
- * @apiDescription Escucha los mensajes ordenes canceladas desde el servicio orders.
- *
- * @apiSuccessExample {json} Mensaje
- *     {
- *        "type": "logout",
- *        "message": "{
- *                      objectID:string,
- *                      reason; string,
- *                      userId: string
- *                     }"
- *     }
+/*
+ * {topic} order/order_canceled Ordenes Canceladas
  */
 async function processCanceled(rabbitMessage: IRabbitMessage) {
     Logger.log(`RabbitMQ: Order ${rabbitMessage.message.orderId} canceled`);
