@@ -29,7 +29,7 @@ export class ComplaintsModule implements NestModule {
       .apply(UserMiddleware)
       .forRoutes({
         path: "api/v1/reclamos",
-        method: RequestMethod.ALL
+        method: RequestMethod.POST
       });
   }
 }

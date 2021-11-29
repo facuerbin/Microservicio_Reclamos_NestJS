@@ -53,7 +53,7 @@ services:
     container_name: prod-order-java
     ports:
       - "3004:3004"
-    image: facuerbin/ordenes_java:latest
+    image: facuerbin/ordenes-java:latest
     depends_on:
       - "rabbitmq"
       - "mongo"

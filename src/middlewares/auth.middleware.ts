@@ -1,7 +1,5 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { GetUserDto } from 'src/api/v1/complaints/dto/get.user.dto';
-import axios from 'axios';
 import * as token from '../tokens/token'; 
 
 

@@ -70,16 +70,6 @@ services:
     depends_on:
       - "rabbitmq"
       - "mongo"
-  prod-comlplaints-node:
-    container_name: prod-comlplaints-node
-    extra_hosts:
-      - "host.docker.internal:172.17.0.1"
-    ports:
-      - "3005:3005"
-    image: facuerbin/microservicio_reclamos:latest
-    depends_on:
-      - "rabbitmq"
-      - "mongo"
   prod-api-cli:
     container_name: prod-api-cli
     extra_hosts:

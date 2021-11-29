@@ -20,7 +20,7 @@ export class Complaint {
     @Prop()
     updated: Date;
     
-    @ApiProperty()
+    @ApiProperty({ enum: ['Active','Solved', 'Canceled', 'Expired']})
     @Prop({ required: true })
     status: string;
     

@@ -9,5 +9,5 @@ FROM node:16-alpine3.13
 WORKDIR /app
 COPY --from=builder /app ./
 EXPOSE 3005
-CMD ["npm", "run", "start:prod"]
+CMD ["npm","start"]
 

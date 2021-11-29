@@ -33,6 +33,7 @@ export class ComplaintsService {
       .dateRead(null)
       .userId(user.id)
       .messageId((new Types.ObjectId()).toString())
+      .imageUrl(createComplaintDto.imageUrl)
       .build();
 
     // Creo el reclamo
@@ -63,22 +64,18 @@ export class ComplaintsService {
     }).exec();
   }
 
-  async findById(id: string, userId: string): Promise<Complaint> {
+  async findById(id: string, userId: string, role: string): Promise<Complaint> {
     // Traigo el reclamo
-    const complaint = await this.complaintModel.findOne({
-      _id: id,
-      userId
-    }).exec();
-
+    let query = role.includes("admin")? {_id: id}: {_id: id, userId}
+    const complaint = await this.complaintModel.findOne(query).exec();
     // Cambio los mensajes a leídos
     complaint.messages.map(message => {
-      if (message.userId === userId && !message.dateRead) {
+      if (message.userId !== userId && message.dateRead === null) {
         message.dateRead = new Date();
       }
     });
-
     // Guardo el reclamo
-    return complaint.save();
+    return await complaint.save();  
   }
 
   async createMessage(user: User, complaintId: string, message: CreateMessageDto): Promise<Complaint> {
@@ -147,7 +144,7 @@ export class ComplaintsService {
     const results = await this.complaintModel.find({
       updated: {
         $lte: expiration,
-      }, 
+      },
       status: Status.Active,
     }).exec();
 

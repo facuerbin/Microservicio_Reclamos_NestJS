@@ -38,9 +38,13 @@ async function processCanceled(rabbitMessage: IRabbitMessage) {
     db.model("complaints", ComplaintSchema)
         .findOne({ orderId: rabbitMessage.message.orderId, status: Status.Active }).exec()
         .then(complaint => {
-            complaint.status = Status.Canceled;
-            complaint.save();
-            Logger.log(`Complaint: ${complaint.id} was canceled`);
+            if (complaint && complaint.status) {
+                complaint.status = Status.Canceled;
+                complaint.save();
+                Logger.log(`Complaint: ${complaint.id} was canceled`);
+            } else {
+                Logger.error(`Complaint: ${complaint.id} there is no active complaint for that orderId`);
+            }
         })
         .catch(error => {
             Logger.error("Error al recibir cancelar orden", error.toString());
