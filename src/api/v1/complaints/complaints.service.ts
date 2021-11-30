@@ -82,6 +82,11 @@ export class ComplaintsService {
     // Traigo el reclamo
     const complaint = await this.complaintModel.findById(complaintId).exec();
 
+    // Me fijo si el ususario puede agregar mensajes
+    if (user.permissions && ! user.permissions.includes("admin") && complaint.userId !== user.id) {
+      throw new Error(`El usuario no puede agregar un mensaje al reclamo ${complaintId}`);      
+    }
+
     // Armo el mensaje
     const newMessage = Builder<Message>()
       .content(message.message)
